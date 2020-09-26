@@ -13,6 +13,7 @@
             </div>
             <p>TV</p>
         </div>
+        
     </div>
 </template>
 <script lang="ts">
@@ -50,6 +51,9 @@ export default class Search extends Vue {
     .img_poster{
         width:130px;
     }
+    .input-div{
+    text-align: center !important;
+}
 }
 .loading-img{
     height: 100vh;
@@ -118,6 +122,8 @@ export default class Search extends Vue {
 }
 .input-div{
     margin-top: 40px;
+    text-align: right;
+    justify-content: right;
 }
 .search-btn{
     cursor: pointer;
