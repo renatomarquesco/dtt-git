@@ -45,8 +45,9 @@
              
         </div>
     </div>
-     <h5 v-if="this.similarShows" class="similar-title">Similar {{isMovie ? "movies" : "series"}}</h5>
-    <div v-bind:style="{marginLeft:margin + 'px', width:(similarShows.length *120 + similarShows.length *20) + 'px'}" class="d-flex" v-if="this.similarShows.length>0" id="similar-shows"> 
+    <div v-if="this.similarShows.length>0"  >
+     <h5 class="similar-title">Similar {{isMovie ? "movies" : "series"}}</h5>
+    <div  v-bind:style="{marginLeft:margin + 'px', width:(similarShows.length *120 + similarShows.length *20) + 'px'}" class="d-flex" v-if="this.similarShows.length>0" id="similar-shows"> 
         <div class="similar-details" v-on:click ="goToDetailPage(similar.id,!isMovie ? true : false),getSimilarShows(similar.id)" v-for="similar in similarShows">
             <img v-if="similar.poster_path" class="similar-img" :src="urlImg + similar.poster_path" alt="">
             <img v-if="!similar.poster_path" class="similar-img" src="../imgs/netflix.png" alt="">
@@ -57,7 +58,7 @@
             <i id="left" v-on:click="handleArrowLeft()" class="fas fa-angle-left"></i>
             <i id="right" v-on:click="handleArrowRight()" class="fas fa-angle-right"></i>
     </div>
-    
+    </div>
 </div>
 </template>
 
@@ -72,7 +73,7 @@ import axios from "axios";
 export default class DetailedPage extends Vue {
 
     apiKey: string = "0567971fd9aa85a3b7dcd6d28eeabd21";
-    @Prop()'movies':Array<object>;
+    @Prop()'movies':any;
     @Prop()"goToDetailPage":any;
     urlImg: String = "https://image.tmdb.org/t/p/original/";
     similarShows:Array<object> = [];

@@ -1,4 +1,5 @@
 <template>
+<div class="container">
     <div id="search">
         <div class="input-div">
             <input placeholder="Search by title..." class="input" 
@@ -15,6 +16,7 @@
         </div>
         
     </div>
+    </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
@@ -29,8 +31,8 @@ export default class Search extends Vue {
         this.$emit('send-search-input', this.searchInput, this.type);
     }
     switchToggle() {
-        const switcher: HTMLElement = document.getElementById("switcher");
-        const toggleBtn: HTMLElement = document.getElementById("toggle-btn");
+        const switcher= <HTMLElement> document.getElementById("switcher");
+        const toggleBtn = <HTMLElement> document.getElementById("toggle-btn");
         if (switcher.classList.contains("series")) {
             switcher.classList.remove("series");
             toggleBtn.classList.remove("diff-bg");
@@ -121,7 +123,7 @@ export default class Search extends Vue {
     outline: none;
 }
 .input-div{
-    margin-top: 40px;
+    margin-top: 15px;
     text-align: right;
     justify-content: right;
 }
@@ -129,22 +131,5 @@ export default class Search extends Vue {
     cursor: pointer;
     width:24px;
 }
-.title-recommend{
-    padding: 20px;
-    display: flex;
-}
-.title-recommend h3{
-    font-size: 30px;
-}
-label{
-    font-size: 20px;
-}
-#sort{
-    height:30px;
-    margin-top: 3px;
-    border-radius:5px;
-}
-#sort option{
-    border-radius:5px;
-}
+
 </style>

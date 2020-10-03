@@ -3,14 +3,14 @@
     <nav class="navbar visible-big row">
         <div class=" brand col-6 text-left"><img class="img-brand" src="../imgs/ymf-brand.png" alt=""></div>
         <div class="nav-items d-flex col-6 justify-content-end">
-            <div v-on:click="reloadPage()"class="nav-item-big"><i class="fas fa-home"></i><span>Home</span></div>
-            <div v-on:click="showNetworkLarge" class="nav-item-big"><i id="img-network-large" class="fas fa-video"></i><span id="span-net">Networks</span></i></div>
-            <div v-on:click="getRandom" class="nav-item-big"><i class="fas fa-random"></i><span>Random</span></div>
+            <div v-on:click="reloadPage()" class="nav-item-big"><i class="fas fa-home"></i><span>Home</span></div>
+            <div v-on:click="showNetworkLarge" class="nav-item-big"><i id="img-network-large" class="fas fa-video"></i><span id="span-net">Networks</span></div>
+            <div v-on:click="getRandom(), closeNavbar()" class="nav-item-big"><i class="fas fa-random"></i><span>Random</span></div>
         </div>
     </nav>
     <div :style="{height:heightNetworkLarge + 'px'}" class="visible-big network-row-large row text-center flex-row-reverse">
         <div class="network-options-large justify-content-center" :style="{marginRight:marginRightNetwork + 'px'}" >
-            <ul>
+            <ul v-on:click="closeNavbar()">
                 <li v-on:click="emitNetworkWithId(213)" >Netflix</li>
                 <li v-on:click="emitNetworkWithId(1024)">Amazon Prime</li>
                 <li v-on:click="emitNetworkWithId(1129)">HBO</li>
@@ -29,7 +29,7 @@
     <div :style="{height: this.heightDiv + 'px'}" class="row navbar-sm-row visible-mobile" >
     <div class="col-7 display-div-net text-center">
         <div :style="{height: this.heightNetwork + 'px'}" class="networks-options-navbar-sm">
-            <ul>
+            <ul v-on:click="closeNavbar()">
                 <li v-on:click="emitNetworkWithId(213)" >Netflix</li>
                 <li v-on:click="emitNetworkWithId(1024)">Amazon Prime</li>
                 <li v-on:click="emitNetworkWithId(49)">HBO</li>
@@ -39,7 +39,7 @@
     <div class="navbar-options text-right col-5">
             <div class="home-sm"><i class="fas fa-home"></i><span>Home</span></div>
             <div id="network-sm" v-on:click="showNetwork" class="net-sm"><i class="fas fa-video"></i><span>Networks</span></div>
-            <div v-on:click="getRandom" class="random-sm"><i class="fas fa-random"></i><span>Random</span></div>
+            <div v-on:click="getRandom(),closeNavbar()" class="random-sm"><i class="fas fa-random"></i><span>Random</span></div>
     </div>
 </div>
 </div>
@@ -79,15 +79,15 @@ emitNetworkWithId(idNetwork:number){
 openNavbar(){
     if(this.heightDiv ==0){
         this.heightDiv = 150;
-        document.getElementById("img-burger-btn").classList.add("fa-times")
-        document.getElementById("img-burger-btn").classList.remove("fa-bars")
+        (<HTMLElement>document.getElementById("img-burger-btn")).classList.add("fa-times");
+        (<HTMLElement>document.getElementById("img-burger-btn")).classList.remove("fa-bars")
 
     }
 
     else{
         this.heightDiv = 0;
-        document.getElementById("img-burger-btn").classList.remove("fa-times")
-        document.getElementById("img-burger-btn").classList.add("fa-bars")
+        (<HTMLElement>document.getElementById("img-burger-btn")).classList.remove("fa-times");
+        (<HTMLElement>document.getElementById("img-burger-btn")).classList.add("fa-bars")
     }
 }
 
@@ -115,6 +115,15 @@ showNetworkLarge(){
 }
 reloadPage(){
     window.location.reload();
+}
+
+closeNavbar(){
+    this.heightDiv = 0;
+    this.heightNetwork= 0;
+    this.marginRightNetwork= -250;
+    this.heightNetworkLarge= 0;
+    (<HTMLElement>document.getElementById("img-burger-btn")).classList.remove("fa-times");
+    (<HTMLElement>document.getElementById("img-burger-btn")).classList.add("fa-bars")
 }
 }
 </script>
