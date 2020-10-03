@@ -2,13 +2,13 @@
     <div id="search">
         <div class="input-div">
             <input placeholder="Search by title..." class="input" 
-            v-model="searchInput" v-on:click=clearInput type="text">
+            v-model="searchInput" v-on:click="clearInput" type="text">
             <img class="search-btn" src="../imgs/search-13-32.png" alt="" v-on:click=searchShow />
         </div>
         <!-- Toggle Button -->
         <div class="d-flex justify-content-center switch">
             <p>Movies</p>
-            <div v-on:click=switchToggle class="toggle-button" id="toggle-btn">
+            <div v-on:click="switchToggle" class="toggle-button" id="toggle-btn">
                 <div id="switcher" class="inner-circle"></div>
             </div>
             <p>TV</p>
@@ -21,7 +21,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class Search extends Vue {
     searchInput: string = "";
-    type: string;
+    type: string="";
     clearInput() {
         this.searchInput = "";
     }

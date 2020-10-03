@@ -1,4 +1,5 @@
 <template>
+<div>
 <div class="container body">
     <Search v-on:send-search-input="handleSearch" v-on:send-type-toggle="handleToggle"/>
     <!-- Loading gif -->
@@ -12,60 +13,71 @@
     <div class="title-recommend" v-if="recommended">
         <h3>Recommended for you</h3>
     </div>
-    <div class="title-recommend" v-if="!recommended">
-        <label for="sort">Sort by:</label>
-
-        <select class="ml-2" name="sort" id="sort"  v-model="sort" v-on:change="">
-            <option value="year">Year</option>
-        </select>
+    <!-- Sorting options -->
+    <div :style="{height:heightSortRow +'px'}" class="sort row">
+        <div class="col-lg-4 col-md-6 col-sm-7 col-8">
+        <ul :style ="{height:heightSortBox + '%'}">
+            <li v-on:click="openSortBox" class="li-title">Sort by:<i class="fas fa-caret-down"></i> </li>
+            <li class="li-element" v-on:click="ascendingYear()">Release date (Ascending)</li>
+            <li class="li-element" v-on:click="descendingYear()">Release date (Descending)</li>
+        </ul>
+        </div>
     </div>
-    </div>
+    
     <div v-if="movies.length>1">
      <div v-if="searchSeries" class="row">
-        <div class="col-lg-3 col-6"  v-for="movie in movies" v-if="movie.poster_path">
+        <div class="col-md-3 col-6"  v-for="movie in movies" v-if="movie.poster_path">
             <img v-on:click= goToDetailPage(movie.id,true) class="img_poster" :src=" urlImg + movie.poster_path" alt="">
-            <h5 >{{movie.original_name}}</h5>
+            <h5 >{{movie.name}}</h5>
             <h6>{{(new Date(movie.first_air_date).getFullYear())}}</h6>
         </div>
     </div>
     <div v-if="!searchSeries" class="row">
         <div class="col-lg-3 col-6 movie-div" v-for="movie in movies"  v-if="movie.poster_path">
             <img v-on:click= goToDetailPage(movie.id,false) class="img_poster" :src=" urlImg + movie.poster_path" alt="">
-            <h5 >{{movie.original_title}}</h5>
+            <h5 >{{movie.title}}</h5>
             <h6>{{(new Date(movie.release_date).getFullYear())}}</h6>
         </div>
     </div>
   </div>
   </div>
+  </div>
   <!-- Div with detail page -->
-  <DetailedPage v-if="movies.length ==1" v-bind:movies="this.movies"/>
+  <DetailedPage v-if="movies.length ==1" v-bind:goToDetailPage="goToDetailPage" v-bind:movies="this.movies"/>
+</div>
 </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import axios from "axios";
+import Navbar from './Navbar.vue'
 import Search from './Search.vue';
 import DetailedPage from "./DetailedPage.vue"
 @Component({
   name: 'Movies',
   components: {
     Search,
-    DetailedPage
+    DetailedPage,
   }
 })
 export default class Movies extends Vue {
+    @Prop()"getShowsByNetwork":any;
+    @Prop()"movies":Array<object>
+    @Prop()"searchSeries":boolean;
     apiKey: string = "0567971fd9aa85a3b7dcd6d28eeabd21";
     urlImg: String = "https://image.tmdb.org/t/p/original/"
     //Create array to store the movie data
-    movies: Array<object> = []
     search: string = ""
     sort: string = ""
-    searchSeries: boolean = false
     recommended: boolean = true;
+    heightSortBox:number = 22;
+    heightSortRow:number = 30;
+
+    
 
     // Function to call API
-    handleSearch(searchInput, type) {
+    handleSearch(searchInput:string, type:string) {
         this.search = searchInput;
         this.searchSeries = type === "series";
         let apiUrl : string = this.buildApiUrl(this.search, this.searchSeries);
@@ -82,7 +94,7 @@ export default class Movies extends Vue {
         return `https://api.themoviedb.org/3/${api}/${resource}/${resourceSubPath}`;
     }
     // Function to switch toggle (series ans movies)
-    handleToggle(type) {
+    handleToggle(type:string) {
         this.handleSearch(this.search, type);
     }
 
@@ -97,12 +109,61 @@ export default class Movies extends Vue {
     created() {
         this.handleSearch(this.search, this.searchSeries ? "series" : "movies");
     }
+
+    ascendingYear(){
+        if(this.searchSeries){
+            this.movies.sort(function (a,b){
+            return (new Date(a.first_air_date).getFullYear()) - (new Date(b.first_air_date).getFullYear())
+        })
+        }
+
+        else{
+            this.movies.sort(function (a,b){
+            return (new Date(a.release_date).getFullYear()) - (new Date(b.release_date).getFullYear())
+        })
+
+        }
+        this.heightSortBox = 22;
+        this.heightSortRow = 30;
+        
+    }
+
+    descendingYear(){
+        if(this.searchSeries){
+            this.movies.sort(function (a,b){
+            return (new Date(b.first_air_date).getFullYear()) - (new Date(a.first_air_date).getFullYear())
+        })
+        }
+
+        else{
+            this.movies.sort(function (a,b){
+            return (new Date(b.release_date).getFullYear()) - (new Date(a.release_date).getFullYear())
+        })
+
+        }
+
+        this.heightSortBox = 22;
+        this.heightSortRow = 30;
+    }
+
+    openSortBox(){
+        if(this.heightSortBox == 22){
+            this.heightSortBox = 100
+            this.heightSortRow = 140;
+        }
+
+        else{
+            this.heightSortBox =22;
+            this.heightSortRow = 30;
+        }
+    }
+
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-@media(max-width:500px){
+@media(max-width:992px){
     .img_poster{
         width:130px!important;
     }
@@ -190,13 +251,55 @@ export default class Movies extends Vue {
 label{
     font-size: 20px;
 }
-#sort{
-    height:30px;
-    margin-top: 3px;
-    border-radius:5px;
+.sort{
+    display: flex;
+    text-align: right;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    padding-left: 10px;
 }
-#sort option{
-    border-radius:5px;
+
+.sort div{
+    display: flex;
+    text-align: left;
+
+}
+.sort ul li{
+    list-style: none;
+    margin-right: 10px;
+    margin-left:-30px;
+    position: relative;
+    border-radius:10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+}
+.sort ul{
+    margin-left: 10px;
+    margin-top: 0;
+    border:0.2px solid rgb(126, 125, 125);
+    border-radius: 10px;
+    padding-top: 0;
+    height:22%;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.sort ul li i{
+    position: absolute;
+    right: 2%;
+    margin-top: 4px;
+}
+.li-title{
+    padding-left:5px;
+    padding-right:5px;
+    margin-bottom: 5px;
+}
+.li-element{
+    padding: 10px 5px;
+}
+.li-element:hover{
+    background: rgb(73, 72, 72);
 }
 
 </style>

@@ -3,20 +3,61 @@
     
   <!-- Div with detail page -->
     <div class="detail-page" >
-        <div class="name-show"><h1>{{movies[0].original_title ? movies[0].original_title : movies[0].original_name}}</h1></div>
-        <div class="backdrop-div"><img class="backdrop-img" :src="movies[0].backdrop_path ? urlImg + movies[0].backdrop_path :'../imgs/backdrop.png'" alt= 'Image not found'>
+        <div class="name-show"><h1>{{movies[0].title ? movies[0].original_title : movies[0].name}}</h1></div>
+        <div class="backdrop-div">
+            <img v-if="movies[0].backdrop_path" class="backdrop-img" :src="urlImg + movies[0].backdrop_path" alt= 'Image not found'>
+            <img v-if ="!movies[0].backdrop_path" src="../imgs/backdrop.png" class="backdrop-img" >
         <div class="gradient-div"><h4>{{movies[0].overview}}</h4></div>
         </div>
-        <div class="details row">
-            <div class="col-12 overview"></div>
+        <div class="details row text-left">
             <div class="col-12 d-flex genres">
                 <div v-for="genre in movies[0].genres" >
-                    <h6 >{{genre.name}}
-                    </h6>
+                    {{genre.name}}
                 </div>
+            </div> 
+        </div>
+        <!-- Get networks if it is a serie -->
+        <div class="networks" v-if="movies[0].networks">
+            <div class="d-flex">
+            <img  v-for="network in movies[0].networks" :src="urlImg +network.logo_path" alt="">
             </div>
         </div>
+        <!-- Homepage-button -->
+        <div v-if="movies[0].homepage" class="text-left homepage-btn">
+            <a target="_blank" :href="movies[0].homepage">Visit homepage</a> 
+        </div>
+        <div class="row more-details">
+            <div class="col-lg-4 div-calendar">
+                        <i class="fas fa-calendar-alt"></i> {{movies[0].release_date ? (new Date(movies[0].release_date).getFullYear()) : (new Date(movies[0].first_air_date).getFullYear())}}
+            </div>
+            <div class="col-lg-4 language-div " v-if="movies[0].spoken_languages"> 
+                <i class="fas fa-language"></i>
+                    <span v-for ="language in movies[0].spoken_languages">
+                        {{language.name}}    
+                    </span>
+            </div>
+            <div class="col-lg-4 language-div" v-if="movies[0].origin_country"> 
+                <i class="fas fa-flag"></i>{{movies[0].origin_country[0]}}
+            </div>
+            <div v-if="movies[0].runtime||movies[0].episode_run_time" class="col-lg-4 duration-div"> 
+               <i class="fas fa-clock"></i>{{movies[0].runtime ||movies[0].episode_run_time[0]}} min
+            </div>
+             
+        </div>
     </div>
+     <h5 v-if="this.similarShows" class="similar-title">Similar {{isMovie ? "movies" : "series"}}</h5>
+    <div v-bind:style="{marginLeft:margin + 'px', width:(similarShows.length *120 + similarShows.length *20) + 'px'}" class="d-flex" v-if="this.similarShows.length>0" id="similar-shows"> 
+        <div class="similar-details" v-on:click ="goToDetailPage(similar.id,!isMovie ? true : false),getSimilarShows(similar.id)" v-for="similar in similarShows">
+            <img v-if="similar.poster_path" class="similar-img" :src="urlImg + similar.poster_path" alt="">
+            <img v-if="!similar.poster_path" class="similar-img" src="../imgs/netflix.png" alt="">
+            <h6>{{similar.original_title ? similar.title : similar.name}}</h6>
+        </div>
+    </div>
+   <div class="angle-div text-center">
+            <i id="left" v-on:click="handleArrowLeft()" class="fas fa-angle-left"></i>
+            <i id="right" v-on:click="handleArrowRight()" class="fas fa-angle-right"></i>
+    </div>
+    
 </div>
 </template>
 
@@ -25,24 +66,57 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Movies from "./Movies.vue"
 import axios from "axios";
 
-
-
-@Component
-export default class DetailedPage extends Vue {
+@Component({
     name:"DetailedPage"
-    @Prop()"movies";
+})
+export default class DetailedPage extends Vue {
+
+    apiKey: string = "0567971fd9aa85a3b7dcd6d28eeabd21";
+    @Prop()'movies':Array<object>;
+    @Prop()"goToDetailPage":any;
     urlImg: String = "https://image.tmdb.org/t/p/original/";
-    backdrop: String = "../imgs/backdrop.png"
+    similarShows:Array<object> = [];
+    isMovie:boolean = this.movies[0].original_title ? true : false;
+    margin:number = -10;
+
+    getSimilarShows(id:number){
+        let media:String = this.isMovie ? "movie" : "tv"
+        axios.get(`https://api.themoviedb.org/3/${media}/${id}/similar?api_key=${this.apiKey}&language=en-US&page=1`)
+        .then(response => this.similarShows =response.data.results)
+        .catch(err=> console.log(err))
+    }
+    
+
+    handleArrowRight(){
+        this.margin -= innerWidth /2 ;
+        if (this.margin <= -(this.similarShows.length*120)){
+            this.margin = -10;
+        }
+    }
+    handleArrowLeft(){
+        this.margin += innerWidth/2;
+        if (this.margin>-10){
+            this.margin = -10;
+        }
+        console.log(this.margin)
+    }
 
     created(){
-        console.log(this.movies)
+        this.getSimilarShows(this.movies[0].id)
     }
+    
+    
 }
 
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+
+.container{
+    overflow: hidden;
+}
 
 .detail-page img{
     width:100%;
@@ -58,8 +132,10 @@ export default class DetailedPage extends Vue {
 
 .detail-page{
     color:white
-}.genres{
-    padding-left: 10px;
+}
+
+.genres{
+    padding-left: 17px;
 }
 .genres div{
     margin-right: 10px;
@@ -67,16 +143,14 @@ export default class DetailedPage extends Vue {
     background:white;
     color:rgb(36, 35, 35);
     display: flex;
-    align-content: center;
-    padding: 6px;
+    align-items: center;
+    padding: 5px;
     margin-top: 20px;
     margin-bottom: 40px;
-}
-
-.genres div h6{
     font-size: 18px;
     font-weight: 700;
 }
+
 .overview{
     text-align: justify;
     margin-top: 40px;
@@ -85,15 +159,73 @@ export default class DetailedPage extends Vue {
     border-radius:10px;
 }
 
-#img-to-click{
-    cursor:pointer;
-    display: flex;
-    align-items: center;
-    justify-content: end;
+.homepage-btn{
+    text-decoration: none;
+    color:white;
+    cursor: pointer;
+    background: red;
+    padding: 10px;
+    border-radius:10px;
+    margin-bottom: 20px;
+    transform: scale(0.9);
+    transition: all 0.3s ease;
+    width:115px;
+    margin-left:-8px;
+}
+.homepage-btn a{
+    color: white;
 }
 
+.homepage-btn:hover{
+    transform: scale(1);
+}
 
-@media (max-width:500px){
+.networks {
+    text-align: left;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.similar-img{
+    width:120px;
+    transform: scale(0.9);
+    border-radius:10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+}
+.similar-img:hover{
+    transform: scale(1);
+}
+.similar-title{
+    color: white;
+    margin-top: 30px;;
+}
+#similar-shows{
+    overflow-x: hidden;
+    color: white;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+#similar-shows div{
+    margin-right:20px;
+    width:110px;
+    word-wrap: break-word;
+}
+.angle-div{ 
+    color: white;
+    font-size:40px;
+}
+
+.angle-div i{
+    padding-left: 20px;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+@media (max-width:991.99px){
 .backdrop-div{
     position: relative;
 }
@@ -109,12 +241,65 @@ export default class DetailedPage extends Vue {
     font-size:19px;
 }
 .name-show h1{
-    font-size: 24px!important;
+    font-size: 26px!important;
 }
+.genres div{
+    margin-right: 10px;
+    border-radius:5px;
+    background:white;
+    color:rgb(36, 35, 35);
+    display: flex;
+    align-items: center;
+    padding: 3px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.more-details i{
+    font-size: 24px;
+    margin-right:10px;
+}
+.more-details{
+    font-size:18px;
+    border-radius:10px;
+    padding:10px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin-top: 20px;
+}
+
+.more-details div{
+    border-bottom:0.2px solid red;
+    margin-top: 10px;
+}
+.similar-img{
+    width:100px!important;
+}
+
+.networks div{
+    border-radius: 10px;
+    width:100%;
+    text-align: left;
+    justify-content: left;
+    display: flex;
+    align-items: center;
+}
+.networks img{
+    width:20%;
+    height:20%;
+    background: white;
+    border-radius:10px;
+    padding: 5px;
+    margin-right: 10px;
 
 }
 
-@media(min-width:501px){
+}
+
+@media(min-width:992px){
 .backdrop-div{
     position: relative;
 }
@@ -133,7 +318,52 @@ export default class DetailedPage extends Vue {
     margin-top: 20px;
     text-align: justify;
 }
+.more-details i{
+    font-size: 25px;
+    margin-right:10px;
+}
+.more-details{
+    font-size:20px;
+    padding:10px;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    text-align: left;
+    margin-top: 30px;
+}
+.more-details div{
+    border-bottom:0.2px solid red;
+    padding-bottom:8px;
+}
 
+h5{
+    font-size: 30px;
+}
+
+.duration-div{
+    text-align: right;
+}
+
+.language-div{
+    text-align: center;
+}
+
+.networks div{
+    border-radius: 10px;
+    width:800px;
+    text-align: left;
+    justify-content: left;
+    display: flex;
+    align-items: center;
+}
+.networks img{
+    width:10%;
+    height:10%;
+    background: white;
+    border-radius:10px;
+    padding: 10px;
+    margin-right: 20px;
+}
 
 }
 </style>

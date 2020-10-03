@@ -1,33 +1,128 @@
 <template>
 <div class="container">
-    <nav class="navbar row">
+    <nav class="navbar visible-big row">
         <div class=" brand col-6 text-left"><img class="img-brand" src="../imgs/ymf-brand.png" alt=""></div>
         <div class="nav-items d-flex col-6 justify-content-end">
-            <div class="nav-item"><a href=""><i class="fas fa-home"></i></a></div>
-            <div class="nav-item"><a href=""><i class="fas fa-video"></i></a></div>
-            <div class="nav-item"><a href=""><i class="fas fa-random"></i></a></div>
+            <div v-on:click="reloadPage()"class="nav-item-big"><i class="fas fa-home"></i><span>Home</span></div>
+            <div v-on:click="showNetworkLarge" class="nav-item-big"><i id="img-network-large" class="fas fa-video"></i><span id="span-net">Networks</span></i></div>
+            <div v-on:click="getRandom" class="nav-item-big"><i class="fas fa-random"></i><span>Random</span></div>
         </div>
     </nav>
+    <div :style="{height:heightNetworkLarge + 'px'}" class="visible-big network-row-large row text-center flex-row-reverse">
+        <div class="network-options-large justify-content-center" :style="{marginRight:marginRightNetwork + 'px'}" >
+            <ul>
+                <li v-on:click="emitNetworkWithId(213)" >Netflix</li>
+                <li v-on:click="emitNetworkWithId(1024)">Amazon Prime</li>
+                <li v-on:click="emitNetworkWithId(1129)">HBO</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Navbar for smaller devices -->
+    <nav class="navbar visible-mobile nav-bar-sm">
+        <div class="nav-brand  text-left">
+            <img class="img-brand" src="../imgs/ymf-brand.png" alt="">
+        </div>
+        <div class="burger-btn">
+            <div id="burger-btn" v-on:click="openNavbar" class="nav-item"><i id="img-burger-btn" class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+    <div :style="{height: this.heightDiv + 'px'}" class="row navbar-sm-row visible-mobile" >
+    <div class="col-7 display-div-net text-center">
+        <div :style="{height: this.heightNetwork + 'px'}" class="networks-options-navbar-sm">
+            <ul>
+                <li v-on:click="emitNetworkWithId(213)" >Netflix</li>
+                <li v-on:click="emitNetworkWithId(1024)">Amazon Prime</li>
+                <li v-on:click="emitNetworkWithId(49)">HBO</li>
+            </ul>
+        </div>
+    </div>
+    <div class="navbar-options text-right col-5">
+            <div class="home-sm"><i class="fas fa-home"></i><span>Home</span></div>
+            <div id="network-sm" v-on:click="showNetwork" class="net-sm"><i class="fas fa-video"></i><span>Networks</span></div>
+            <div v-on:click="getRandom" class="random-sm"><i class="fas fa-random"></i><span>Random</span></div>
+    </div>
+</div>
 </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import Movies from "./Movies.vue"
 import App from "../App.vue"
 import axios from "axios";
-
-@Component
-export default class Navbar extends Vue {
+import RandomMovie from "./RandomMovie.vue";
 
 
+@Component({
+    name:'Navbar',
+    components:{
+        RandomMovie,
+    }
+})
+export default class Navbar extends Vue{
+@Prop()"isThereRandom":boolean;
+@Prop()"movies":Array<object>;
+heightDiv:number = 0;
+heightNetwork:number = 0;
+marginRightNetwork:number = -250;
+heightNetworkLarge:number = 0;
 
+
+getRandom(){
+    this.$emit('get-random-movie')
+}
+
+emitNetworkWithId(idNetwork:number){
+    this.$emit("emit-network", idNetwork)
+}
+
+openNavbar(){
+    if(this.heightDiv ==0){
+        this.heightDiv = 150;
+        document.getElementById("img-burger-btn").classList.add("fa-times")
+        document.getElementById("img-burger-btn").classList.remove("fa-bars")
+
+    }
+
+    else{
+        this.heightDiv = 0;
+        document.getElementById("img-burger-btn").classList.remove("fa-times")
+        document.getElementById("img-burger-btn").classList.add("fa-bars")
+    }
+}
+
+showNetwork(){
+      if(this.heightNetwork ==0){
+        this.heightNetwork = 150;
+
+    }
+
+    else{
+        this.heightNetwork = 0;
+    }
+}
+
+showNetworkLarge(){
+    if(this.marginRightNetwork == -250){
+        this.marginRightNetwork = 40;
+        this.heightNetworkLarge = 100;
+    }
+
+    else{
+        this.marginRightNetwork = -250;
+        this.heightNetworkLarge = 0;
+    }
+}
+reloadPage(){
+    window.location.reload();
+}
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-@media(max-width:600px){
+@media(max-width:992px){
     .nav-item{
         padding:0!important;
        
@@ -41,36 +136,109 @@ export default class Navbar extends Vue {
         content: url("../imgs/ymf-mobile.png");
         width:100px!important
     }
+    .visible-big{
+        display: none;
+    }
 
+    .nav-bar-sm{
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 30px;
+    }
+
+    .navbar-sm-row{
+        overflow: hidden;
+        transition: all 0.3s ease;
+        
+    }
+
+
+    .navbar-options div{
+        margin-bottom: 20px;
+        border-bottom:0.2px solid red;
+        padding: 3px;
+        font-size: 18px;
+    }
+
+    .navbar-options i{
+        margin-right: 10px;
+        font-size: 18px;
+    }
+
+    .networks-options-navbar-sm{
+        overflow: hidden;
+        text-align: center;
+        padding: 5px;
+        transition: all 0.4s ease;
+    }
+
+    .networks-options-navbar-sm ul li{
+        list-style: none;
+        padding: 5px;
+        font-size: 18px;
+    }
+
+    .display-div-net{
+        display: flex;
+        align-items: center;
+    }
+
+    #burger-btn{
+        transition: all 0.4s ease;
+    }
+}
+    
+@media(min-width:991.99px){
+    .visible-mobile{
+        display: none;
+    }
 }
 
 .container{
     color: white;
+    font-family: 'Dosis', sans-serif;
+    overflow: hidden;
 
+}
+
+.navbar{
+  background: transparent;
 }
 .navbar a{
     text-decoration: none;
     color: white;
     text-transform: uppercase;
 }
-.nav-item{
+.nav-item-big{
     border:0.2px solid transparent;
     margin-left: 30px;
     border-radius: 5px;
+    width:50px;
     padding:10px;
     transition: all 0.5s ease;
     font-size: 20px;
     display: flex;
-    align-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
 }
 
-.nav-item span{ 
-    margin-left:100px;
-    transition: all 0.3s ease;
+.nav-item-big i{
+    cursor: pointer;
 }
-.nav-item:hover{
-     border:0.2px solid rgb(255, 0, 0);
-     transform: scale(1.2);
+.nav-item-big span{ 
+    transition: all 0.4s ease;
+    margin-left: 70px;
+}
+.nav-item-big:hover{
+    border:0.2px solid rgb(255, 0, 0);
+    transform: scale(1.2);
+    width:125px;
+}
+
+.nav-item-big:hover span{
+    margin-left:10px;
 }
 
 .brand h1{
@@ -79,7 +247,31 @@ export default class Navbar extends Vue {
 .img-brand{
     width:200px;
 }
+.network-row-large ul li{
+    list-style: none;
+    border-bottom: 0.2px solid red;
+    font-size: 18px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    width:200px;
+    cursor: pointer;
+    transition: 0.4s all ease;
+    
+}
 
+.network-row-large ul li:hover{
+    padding-right: 20px;
+    transform:scale(1.05)
+    
+}
+.network-row-large{
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+.network-options-large{
+    transition: all 0.4s ease;
+    transition-delay: 0.4s;
+}
 
 
 </style>
