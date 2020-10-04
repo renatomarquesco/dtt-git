@@ -50,15 +50,7 @@ closeSortBox(){
 .container{
     padding-left:32px;
 }
-.sort{
-    display: flex;
-    text-align: right;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    padding-left: 0px;
-    color: white;
-    margin-top: 20px;
-}
+
 
 .sort div{
     display: flex;
@@ -106,7 +98,27 @@ closeSortBox(){
 .li-element{
     font-size: 14px;
 }
+.sort{
+    display: flex;
+    text-align: right;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    color: white;
+    margin-top: 20px;
+}
 
+}
+
+@media(min-width:768px){
+.sort{
+    display: flex;
+    text-align: right;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    color: white;
+    margin-top: 20px;
+    padding-left: 10px;
+}
 }
 
 </style>

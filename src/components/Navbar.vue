@@ -1,4 +1,5 @@
 <template>
+<div class="container-fluid sticky-top">
 <div class="container">
     <nav class="navbar visible-big row">
         <div class=" brand col-6 text-left"><img class="img-brand" src="../imgs/ymf-brand.png" alt=""></div>
@@ -17,6 +18,7 @@
             </ul>
         </div>
     </div>
+</div>
     <!-- Navbar for smaller devices -->
     <nav class="navbar visible-mobile nav-bar-sm">
         <div class="nav-brand  text-left">
@@ -78,7 +80,7 @@ emitNetworkWithId(idNetwork:number){
 
 openNavbar(){
     if(this.heightDiv ==0){
-        this.heightDiv = 150;
+        this.heightDiv = 180;
         (<HTMLElement>document.getElementById("img-burger-btn")).classList.add("fa-times");
         (<HTMLElement>document.getElementById("img-burger-btn")).classList.remove("fa-bars")
 
@@ -92,8 +94,8 @@ openNavbar(){
 }
 
 showNetwork(){
-      if(this.heightNetwork ==0){
-        this.heightNetwork = 150;
+      if(this.heightNetwork == 0){
+        this.heightNetwork = 130;
 
     }
 
@@ -105,7 +107,7 @@ showNetwork(){
 showNetworkLarge(){
     if(this.marginRightNetwork == -250){
         this.marginRightNetwork = 40;
-        this.heightNetworkLarge = 100;
+        this.heightNetworkLarge = 120;
     }
 
     else{
@@ -130,6 +132,12 @@ closeNavbar(){
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.container-fluid{
+    background: #000000;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #434343, #000000);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #333333, #000000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */;
+    color: white;
+}
 
 @media(max-width:992px){
     .nav-item{
@@ -267,7 +275,6 @@ closeNavbar(){
     transition: 0.4s all ease;
     
 }
-
 .network-row-large ul li:hover{
     padding-right: 20px;
     transform:scale(1.05)
@@ -281,6 +288,5 @@ closeNavbar(){
     transition: all 0.4s ease;
     transition-delay: 0.4s;
 }
-
 
 </style>
