@@ -24,7 +24,6 @@ heightSortBox:number = 30;
 heightSortRow:number = 35;
 widthSortBox:number = 70;
 
-
 openSortBox(){
     if(this.heightSortBox == 30){
             this.heightSortBox = 110
@@ -56,7 +55,7 @@ closeSortBox(){
     text-align: right;
     overflow: hidden;
     transition: all 0.3s ease;
-    padding-left: 10px;
+    padding-left: 0px;
     color: white;
     margin-top: 20px;
 }
@@ -107,5 +106,7 @@ closeSortBox(){
 .li-element{
     font-size: 14px;
 }
+
 }
+
 </style>

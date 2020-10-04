@@ -11,7 +11,7 @@
     <div v-if="movies.length>1">
      <div v-if="searchSeries" class="row">
         <div class="col-md-3 col-6"  v-for="movie in movies" :key="movie.id" v-if="movie.poster_path">
-            <img v-on:click= goToDetailPage(movie.id,true) class="img_poster" :src=" urlImg + movie.poster_path" alt="">
+            <img v-on:click="goToDetailPage(movie.id,true),$emit('no-sort')" class="img_poster" :src=" urlImg + movie.poster_path" alt="">
             <h5 >{{movie.name}}</h5>
             <h6>{{(new Date(movie.first_air_date).getFullYear())}}</h6>
         </div>
@@ -143,8 +143,4 @@ export default class Movies extends Vue {
     cursor: pointer;
     width:24px;
 }
-label{
-    font-size: 20px;
-}
-
 </style>
