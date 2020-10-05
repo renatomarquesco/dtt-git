@@ -64,23 +64,22 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Movies from "./Movies.vue"
-import axios from "axios";
+import Movies from './Movies.vue'
+import axios from 'axios';
 
 @Component({
     name:"DetailedPage"
 })
 export default class DetailedPage extends Vue {
-
     apiKey: string = "0567971fd9aa85a3b7dcd6d28eeabd21";
-    @Prop()'movies':any;
-    @Prop()"goToDetailPage":any;
-    urlImg: String = "https://image.tmdb.org/t/p/original/";
-    similarShows:Array<object> = [];
-    isMovie:boolean = this.movies[0].original_title ? true : false;
-    margin:number = -10;
+    @Prop()'movies' : any;
+    @Prop()"goToDetailPage" : any;
+    public urlImg: String = "https://image.tmdb.org/t/p/original/";
+    public similarShows :Array<object> = [];
+    public isMovie:boolean = this.movies[0].original_title ? true : false;
+    public margin:number = -10;
 
-    getSimilarShows(id:number){
+    getSimilarShows(id: number){
         let media:String = this.isMovie ? "movie" : "tv"
         axios.get(`https://api.themoviedb.org/3/${media}/${id}/similar?api_key=${this.apiKey}&language=en-US&page=1`)
         .then(response => this.similarShows =response.data.results)
@@ -88,15 +87,15 @@ export default class DetailedPage extends Vue {
     }
     
 
-    handleArrowRight(){
+    handleArrowRight() {
         this.margin -= innerWidth /2 ;
-        if (this.margin <= -(this.similarShows.length*120)){
+        if (this.margin <= -(this.similarShows.length*120)) {
             this.margin = -10;
         }
     }
-    handleArrowLeft(){
+    handleArrowLeft() {
         this.margin += innerWidth/2;
-        if (this.margin>-10){
+        if (this.margin>-10) {
             this.margin = -10;
         }
         console.log(this.margin)
@@ -226,6 +225,7 @@ export default class DetailedPage extends Vue {
     cursor: pointer;
 }
 
+/* Style for smaller screens */
 @media (max-width:991.99px){
 .backdrop-div{
     position: relative;
@@ -299,6 +299,7 @@ export default class DetailedPage extends Vue {
 }
 
 }
+
 
 @media(min-width:992px){
 .backdrop-div{

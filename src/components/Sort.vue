@@ -13,32 +13,32 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import axios from "axios";
+import axios from 'axios';
 
 @Component({
-  name: 'Sort' 
+  name: 'Sort',
 })
 
 export default class Movies extends Vue {
-heightSortBox:number = 30;
-heightSortRow:number = 35;
-widthSortBox:number = 70;
+public heightSortBox: number = 30;
+public heightSortRow: number = 35;
+public widthSortBox: number = 70;
 
-openSortBox(){
-    if(this.heightSortBox == 30){
-            this.heightSortBox = 110
+public openSortBox() {
+    if (this.heightSortBox === 30) {
+            this.heightSortBox = 110;
             this.heightSortRow = 110;
             this.widthSortBox = 250;
     }
 
-    else{
+    else {
             this.heightSortBox = 30;
             this.heightSortRow = 35;
             this.widthSortBox = 70;
     }
 }
 
-closeSortBox(){
+public closeSortBox() {
     this.heightSortBox = 30;
     this.heightSortRow = 35;
     this.widthSortBox = 70;
@@ -93,7 +93,7 @@ closeSortBox(){
 .li-element:hover{
     background: rgb(73, 72, 72);
 }
-
+/* Smaller screens */
 @media(max-width:768px){
 .li-element{
     font-size: 14px;
@@ -109,7 +109,8 @@ closeSortBox(){
 
 }
 
-@media(min-width:768px){
+/* Larger screens */
+@media(min-width:768.01px){
 .sort{
     display: flex;
     text-align: right;

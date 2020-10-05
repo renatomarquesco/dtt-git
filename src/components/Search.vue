@@ -1,15 +1,16 @@
 <template>
 <div class="container">
+    <!-- Div with input to search -->
     <div id="search">
         <div class="input-div">
             <input placeholder="Search by title..." class="input" 
             v-model="searchInput" v-on:click="clearInput" type="text">
-            <img class="search-btn" src="../imgs/search-13-32.png" alt="" v-on:click=searchShow />
+            <img class="search-btn" src="../imgs/search-13-32.png" alt="" v-on:click='searchShow()' />
         </div>
         <!-- Toggle Button -->
         <div class="d-flex justify-content-center switch">
             <p>Movies</p>
-            <div v-on:click="switchToggle" class="toggle-button" id="toggle-btn">
+            <div v-on:click="switchToggle()" class="toggle-button" id="toggle-btn">
                 <div id="switcher" class="inner-circle"></div>
             </div>
             <p>TV</p>
@@ -22,14 +23,15 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class Search extends Vue {
-    searchInput: string = "";
-    type: string="";
+    searchInput: string = '';
+    type: string='';
     clearInput() {
-        this.searchInput = "";
+        this.searchInput = '';
     }
     searchShow() {
         this.$emit('send-search-input', this.searchInput, this.type);
     }
+    // Function to switch toggle and adjust search type (movies or series)
     switchToggle() {
         const switcher= <HTMLElement> document.getElementById("switcher");
         const toggleBtn = <HTMLElement> document.getElementById("toggle-btn");
@@ -49,6 +51,7 @@ export default class Search extends Vue {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+/* Input div to center on smaller screens */
 @media(max-width:500px){
     .img_poster{
         width:130px;
@@ -56,6 +59,7 @@ export default class Search extends Vue {
     .input-div{
     text-align: center !important;
 }
+/* General style */
 }
 .loading-img{
     height: 100vh;

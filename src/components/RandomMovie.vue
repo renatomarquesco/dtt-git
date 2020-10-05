@@ -19,10 +19,12 @@
         <div v-if="randomMovie.homepage" class="text-left homepage-btn">
             <a target="_blank" :href="randomMovie.homepage">Visit homepage</a> 
         </div>
+        <!-- Row with more info -->
         <div class="row more-details">
             <div class="col-lg-4 div-calendar">
                         <i class="fas fa-calendar-alt"></i> {{new Date(randomMovie.release_date).getFullYear()}}
             </div>
+        <!-- Row with language and conditions. If there is no spoken languages property than getting the country where show was produced -->
             <div class="col-lg-4 language-div " v-if="randomMovie.spoken_languages"> 
                 <i class="fas fa-language"></i>
                     <span v-for ="language in randomMovie.spoken_languages">
@@ -37,27 +39,31 @@
             </div>
         </div>
     </div>
+    <!-- Button to get another random movie -->
     <button class="random-btn" v-on:click="showRandom()"> I need another suggestion!</button>
 </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import App from "../App.vue"
-import Navbar from "./Navbar.vue"
-import axios from "axios";
+import App from '../App.vue';
+import Navbar from './Navbar.vue';
+import axios from 'axios';
 
 @Component({
-    name:"RandomMovie"
+    name: 'RandomMovie',
 })
-export default class RandomMovie extends Vue {
-@Prop()"showRandom":any;
-@Prop()"randomMovie":object;
-urlImg: String = "https://image.tmdb.org/t/p/original/";
 
+export default class RandomMovie extends Vue {
+// Getting properties from APP.vue
+@Prop()"showRandom" : any;
+@Prop()"randomMovie" : object;
+
+urlImg :string = "https://image.tmdb.org/t/p/original/";
 
 }
 </script>
+
 <style scoped>
 .container{
     color: white;
@@ -210,6 +216,7 @@ urlImg: String = "https://image.tmdb.org/t/p/original/";
     cursor: pointer;
 }
 
+/* Smaller devices */
 @media (max-width:991.99px){
 .backdrop-div{
     position: relative;
@@ -262,7 +269,7 @@ urlImg: String = "https://image.tmdb.org/t/p/original/";
 }
 
 }
-
+/* Larger devices */
 @media(min-width:992px){
 .backdrop-div{
     position: relative;

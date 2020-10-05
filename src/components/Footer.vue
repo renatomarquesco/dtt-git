@@ -13,11 +13,8 @@ import App from "../App.vue"
 import axios from "axios";
 
 @Component
-export default class Footer extends Vue {
+export default class Footer extends Vue {}
 
-
-
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

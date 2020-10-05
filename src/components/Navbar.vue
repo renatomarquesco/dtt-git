@@ -1,6 +1,7 @@
 <template>
 <div class="container-fluid sticky-top">
-<div class="container">
+  <div class="container">
+    <!-- Navbar for arge screens -->
     <nav class="navbar visible-big row">
         <div class=" brand col-6 text-left"><img class="img-brand" src="../imgs/ymf-brand.png" alt=""></div>
         <div class="nav-items d-flex col-6 justify-content-end">
@@ -9,6 +10,7 @@
             <div v-on:click="getRandom(), closeNavbar()" class="nav-item-big"><i class="fas fa-random"></i><span>Random</span></div>
         </div>
     </nav>
+    <!-- Network options in navbar for larger devices -->
     <div :style="{height:heightNetworkLarge + 'px'}" class="visible-big network-row-large row text-center flex-row-reverse">
         <div class="network-options-large justify-content-center" :style="{marginRight:marginRightNetwork + 'px'}" >
             <ul v-on:click="closeNavbar()">
@@ -22,12 +24,13 @@
     <!-- Navbar for smaller devices -->
     <nav class="navbar visible-mobile nav-bar-sm">
         <div class="nav-brand  text-left">
-            <img class="img-brand" src="../imgs/ymf-brand.png" alt="">
+            <img class="img-brand"  src="../imgs/ymf-brand.png" alt="">
         </div>
         <div class="burger-btn">
             <div id="burger-btn" v-on:click="openNavbar" class="nav-item"><i id="img-burger-btn" class="fas fa-bars"></i></div>
         </div>
     </nav>
+    <!-- Network options for smaller devices -->
     <div :style="{height: this.heightDiv + 'px'}" class="row navbar-sm-row visible-mobile" >
     <div class="col-7 display-div-net text-center">
         <div :style="{height: this.heightNetwork + 'px'}" class="networks-options-navbar-sm">
@@ -39,7 +42,7 @@
         </div>
     </div>
     <div class="navbar-options text-right col-5">
-            <div class="home-sm"><i class="fas fa-home"></i><span>Home</span></div>
+            <div class="home-sm" v-on:click ='reloadPage()' ><i class="fas fa-home"></i><span>Home</span></div>
             <div id="network-sm" v-on:click="showNetwork" class="net-sm"><i class="fas fa-video"></i><span>Networks</span></div>
             <div v-on:click="getRandom(),closeNavbar()" class="random-sm"><i class="fas fa-random"></i><span>Random</span></div>
     </div>
@@ -62,64 +65,39 @@ import RandomMovie from "./RandomMovie.vue";
     }
 })
 export default class Navbar extends Vue{
-@Prop()"isThereRandom":boolean;
-@Prop()"movies":Array<object>;
-heightDiv:number = 0;
-heightNetwork:number = 0;
-marginRightNetwork:number = -250;
-heightNetworkLarge:number = 0;
+@Prop()"isThereRandom" : boolean;
+@Prop()"movies" : Array<object>;
+heightDiv : number = 0;
+heightNetwork : number = 0;
+marginRightNetwork : number = -250;
+heightNetworkLarge : number = 0;
 
-
-getRandom(){
+// Emitting the events to App.vue
+getRandom() {
     this.$emit('get-random-movie')
 }
 
-emitNetworkWithId(idNetwork:number){
+emitNetworkWithId(idNetwork :number) {
     this.$emit("emit-network", idNetwork)
 }
 
-openNavbar(){
-    if(this.heightDiv ==0){
+// Funtion to add style to Navbar (open and close)
+openNavbar() {
+    if (this.heightDiv ==0) {
         this.heightDiv = 180;
         (<HTMLElement>document.getElementById("img-burger-btn")).classList.add("fa-times");
-        (<HTMLElement>document.getElementById("img-burger-btn")).classList.remove("fa-bars")
+        (<HTMLElement>document.getElementById("img-burger-btn")).classList.remove("fa-bars");
 
     }
 
-    else{
+    else {
         this.heightDiv = 0;
         (<HTMLElement>document.getElementById("img-burger-btn")).classList.remove("fa-times");
-        (<HTMLElement>document.getElementById("img-burger-btn")).classList.add("fa-bars")
+        (<HTMLElement>document.getElementById("img-burger-btn")).classList.add("fa-bars");
     }
 }
 
-showNetwork(){
-      if(this.heightNetwork == 0){
-        this.heightNetwork = 130;
-
-    }
-
-    else{
-        this.heightNetwork = 0;
-    }
-}
-
-showNetworkLarge(){
-    if(this.marginRightNetwork == -250){
-        this.marginRightNetwork = 40;
-        this.heightNetworkLarge = 120;
-    }
-
-    else{
-        this.marginRightNetwork = -250;
-        this.heightNetworkLarge = 0;
-    }
-}
-reloadPage(){
-    window.location.reload();
-}
-
-closeNavbar(){
+closeNavbar() {
     this.heightDiv = 0;
     this.heightNetwork= 0;
     this.marginRightNetwork= -250;
@@ -127,6 +105,36 @@ closeNavbar(){
     (<HTMLElement>document.getElementById("img-burger-btn")).classList.remove("fa-times");
     (<HTMLElement>document.getElementById("img-burger-btn")).classList.add("fa-bars")
 }
+
+// Function to show Network options on different devices
+showNetwork(){
+      if (this.heightNetwork == 0) {
+        this.heightNetwork = 130;
+
+    }
+
+    else {
+        this.heightNetwork = 0;
+    }
+}
+
+showNetworkLarge() {
+    if (this.marginRightNetwork == -250) {
+        this.marginRightNetwork = 40;
+        this.heightNetworkLarge = 120;
+    }
+
+    else {
+        this.marginRightNetwork = -250;
+        this.heightNetworkLarge = 0;
+    }
+}
+
+// Reloading page
+reloadPage() {
+    window.location.reload();
+}
+
 }
 </script>
 
@@ -139,6 +147,7 @@ closeNavbar(){
     color: white;
 }
 
+/* Smaller devices */
 @media(max-width:992px){
     .nav-item{
         padding:0!important;
@@ -205,7 +214,8 @@ closeNavbar(){
         transition: all 0.4s ease;
     }
 }
-    
+
+/* Larger devices */
 @media(min-width:991.99px){
     .visible-mobile{
         display: none;
