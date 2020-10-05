@@ -10,14 +10,15 @@
       v-on:send-type-toggle="handleToggle"
     />
     <Sort
-      v-if="!this.isThereRandom && sort"
+      v-if="sort"
       v-on:ascending-year="ascendingYear"
       v-on:descending-year="descendingYear"
     />
     <Movies
       v-if="!isThereRandom"
-      v-bind:movies="this.movies"
+      v-bind:shows="this.shows"
       v-bind:searchSeries="this.searchSeries"
+      v-bind:sort ="this.sort"
       v-on:no-sort="changeSort"
     />
     <RandomMovie
@@ -35,7 +36,6 @@ import Movies from './components/Movies.vue';
 import Navbar from './components/Navbar.vue';
 import Footer from './components/Footer.vue';
 import Search from './components/Search.vue'
-import Recommend from './components/Recommend.vue'
 import RandomMovie from './components/RandomMovie.vue';
 import Sort from './components/Sort.vue';
 import axios from 'axios';
@@ -50,7 +50,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
     Search,
     Footer,
     RandomMovie,
-    Recommend,
     Sort,
   },
 })
@@ -58,7 +57,9 @@ export default class App extends Vue {
 public isThereRandom: boolean = false;
 public apiKey: string = "0567971fd9aa85a3b7dcd6d28eeabd21";
 public randomMovie: object = {}
-public movies: any = []
+// Create array to store response with movies and series collected by API.
+public shows: any = []
+
 public searchSeries: boolean = false
 public search: string = ''
 public recommended: boolean = true;
@@ -71,7 +72,7 @@ public handleSearch(searchInput: string, type: string) {
         let apiUrl : string = this.buildApiUrl(this.search, this.searchSeries);
         let query : string = this.search === "" ? "" : `query=${this.search}&`
         axios.get(`${apiUrl}?${query}api_key=${this.apiKey}`)
-            .then(response => this.movies = response.data.results)
+            .then(response => this.shows = response.data.results)
             .catch(err => console.log(err))
         this.recommended = this.search === "";
         this.sort = true;
@@ -98,27 +99,29 @@ public showRandom() {
   .catch(err => this.showRandom())
   console.log(this.randomMovie); 
   this.isThereRandom = true;
+  this.sort = false;
   }
   
 // Function to get shows by Network (in navbar)
 public getShowsByNetwork(idNetwork: number) { 
     this.searchSeries = true
     axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=0567971fd9aa85a3b7dcd6d28eeabd21&language=en-US&with_networks=${idNetwork}`)
-    .then(response => this.movies = response.data.results)
+    .then(response => this.shows = response.data.results)
     .catch(err => console.log(err))
     this.isThereRandom = false;
+    this.sort = true;
 }
 
 // Function to sort the array by year (ascending)
 public ascendingYear() {
         if(this.searchSeries) {
-            this.movies.sort(function (a:any , b:any){
+            this.shows.sort(function (a:any , b:any){
             return (new Date(a.first_air_date).getFullYear()) - (new Date(b.first_air_date).getFullYear())
         })
         }
 
         else{
-            this.movies.sort(function (a:any,b:any){
+            this.shows.sort(function (a:any,b:any){
             return (new Date(a.release_date).getFullYear()) - (new Date(b.release_date).getFullYear())
         })
       }
@@ -127,13 +130,13 @@ public ascendingYear() {
 // Function to sort the array by year (descending)
 public descendingYear() {
     if(this.searchSeries){
-            this.movies.sort(function (a:any , b: any){
+            this.shows.sort(function (a:any , b: any){
             return (new Date(b.first_air_date).getFullYear()) - (new Date(a.first_air_date).getFullYear())
       })
     }
 
     else{
-      this.movies.sort(function (a: any,b: any){
+      this.shows.sort(function (a: any,b: any){
       return (new Date(b.release_date).getFullYear()) - (new Date(a.release_date).getFullYear())
       })
 
@@ -141,7 +144,7 @@ public descendingYear() {
   }
 // Function to change sort prop to false or true and allow the component to be showned on screen
 public changeSort() {
-  this.sort = !this.sort;
+  this.sort = false;
 }
 
 // Calling the recommened movies

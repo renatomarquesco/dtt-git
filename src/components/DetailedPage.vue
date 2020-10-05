@@ -3,48 +3,49 @@
     
   <!-- Div with detail page -->
     <div class="detail-page" >
-        <div class="name-show"><h1>{{movies[0].title ? movies[0].original_title : movies[0].name}}</h1></div>
+        <div class="name-show"><h1>{{shows[0].title ? shows[0].original_title : shows[0].name}}</h1></div>
         <div class="backdrop-div">
-            <img v-if="movies[0].backdrop_path" class="backdrop-img" :src="urlImg + movies[0].backdrop_path" alt= 'Image not found'>
-            <img v-if ="!movies[0].backdrop_path" src="../imgs/backdrop.png" class="backdrop-img" >
-        <div class="gradient-div"><h4>{{movies[0].overview}}</h4></div>
+            <img v-if="shows[0].backdrop_path" class="backdrop-img" :src="urlImg + shows[0].backdrop_path" alt= 'Image not found'>
+            <img v-if ="!shows[0].backdrop_path" src="../imgs/backdrop.png" class="backdrop-img" >
+        <div class="gradient-div"><h4>{{shows[0].overview}}</h4></div>
         </div>
         <div class="details row text-left">
             <div class="col-12 d-flex genres">
-                <div v-for="genre in movies[0].genres" >
+                <div v-for="genre in shows[0].genres" >
                     {{genre.name}}
                 </div>
             </div> 
         </div>
         <!-- Get networks if it is a serie -->
-        <div class="networks" v-if="movies[0].networks">
+        <div class="networks" v-if="shows[0].networks">
             <div class="d-flex">
-            <img  v-for="network in movies[0].networks" :src="urlImg +network.logo_path" alt="">
+            <img  v-for="network in shows[0].networks" :src="urlImg +network.logo_path" alt="">
             </div>
         </div>
         <!-- Homepage-button -->
-        <div v-if="movies[0].homepage" class="text-left homepage-btn">
-            <a target="_blank" :href="movies[0].homepage">Visit homepage</a> 
+        <div v-if="shows[0].homepage" class="text-left homepage-btn">
+            <a target="_blank" :href="shows[0].homepage">Visit homepage</a> 
         </div>
         <div class="row more-details">
             <div class="col-lg-4 div-calendar">
-                        <i class="fas fa-calendar-alt"></i> {{movies[0].release_date ? (new Date(movies[0].release_date).getFullYear()) : (new Date(movies[0].first_air_date).getFullYear())}}
+                        <i class="fas fa-calendar-alt"></i> {{shows[0].release_date ? (new Date(shows[0].release_date).getFullYear()) : (new Date(shows[0].first_air_date).getFullYear())}}
             </div>
-            <div class="col-lg-4 language-div " v-if="movies[0].spoken_languages"> 
+            <div class="col-lg-4 language-div " v-if="shows[0].spoken_languages"> 
                 <i class="fas fa-language"></i>
-                    <span v-for ="language in movies[0].spoken_languages">
+                    <span v-for ="language in shows[0].spoken_languages">
                         {{language.name}}    
                     </span>
             </div>
-            <div class="col-lg-4 language-div" v-if="movies[0].origin_country"> 
-                <i class="fas fa-flag"></i>{{movies[0].origin_country[0]}}
+            <div class="col-lg-4 language-div" v-if="shows[0].origin_country"> 
+                <i class="fas fa-flag"></i>{{shows[0].origin_country[0]}}
             </div>
-            <div v-if="movies[0].runtime||movies[0].episode_run_time" class="col-lg-4 duration-div"> 
-               <i class="fas fa-clock"></i>{{movies[0].runtime ||movies[0].episode_run_time[0]}} min
+            <div v-if="shows[0].runtime||shows[0].episode_run_time" class="col-lg-4 duration-div"> 
+               <i class="fas fa-clock"></i>{{shows[0].runtime ||shows[0].episode_run_time[0]}} min
             </div>
              
         </div>
     </div>
+    <!-- Similar shows row -->
     <div v-if="this.similarShows.length>0"  >
      <h5 class="similar-title">Similar {{isMovie ? "movies" : "series"}}</h5>
     <div  v-bind:style="{marginLeft:margin + 'px', width:(similarShows.length *120 + similarShows.length *20) + 'px'}" class="d-flex" v-if="this.similarShows.length>0" id="similar-shows"> 
@@ -72,11 +73,12 @@ import axios from 'axios';
 })
 export default class DetailedPage extends Vue {
     apiKey: string = "0567971fd9aa85a3b7dcd6d28eeabd21";
-    @Prop()'movies' : any;
+    @Prop()'shows' : any;
     @Prop()"goToDetailPage" : any;
+    @Prop()"sort" : boolean;
     public urlImg: String = "https://image.tmdb.org/t/p/original/";
     public similarShows :Array<object> = [];
-    public isMovie:boolean = this.movies[0].original_title ? true : false;
+    public isMovie:boolean = this.shows[0].original_title ? true : false;
     public margin:number = -10;
 
     getSimilarShows(id: number){
@@ -102,7 +104,7 @@ export default class DetailedPage extends Vue {
     }
 
     created(){
-        this.getSimilarShows(this.movies[0].id)
+        this.getSimilarShows(this.shows[0].id)
     }
     
     
@@ -300,7 +302,7 @@ export default class DetailedPage extends Vue {
 
 }
 
-
+/* Style for larger screens */
 @media(min-width:992px){
 .backdrop-div{
     position: relative;

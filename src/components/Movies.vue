@@ -2,25 +2,25 @@
 <div class="container body">
     
     <!-- Loading gif while Api call is not completed -->
-    <div class="loading-img" v-if="movies.length == 0">
+    <div class="loading-img" v-if="shows.length == 0">
         <img src="../imgs/ajax-loader.gif" alt="">
     </div>
    
 
     <!--After getting API response  --> 
     <div class="movie row">
-    <!-- Row if the shows are movies -->
-      <div v-if="movies.length>1">
+    <!-- Row if the shows are series -->
+      <div v-if="shows.length>1">
         <div v-if="searchSeries" class="row">
-          <div class="col-md-3 col-6"  v-for="movie in movies" :key="movie.id" v-if="movie.poster_path">
-            <img v-on:click="goToDetailPage(movie.id,true),$emit('no-sort')" class="img_poster" :src=" urlImg + movie.poster_path" alt="">
-            <h5 >{{movie.name}}</h5>
-            <h6>{{(new Date(movie.first_air_date).getFullYear())}}</h6>
+          <div class="col-md-3 col-6"  v-for="serie in shows" :key="serie.id" v-if="serie.poster_path">
+            <img v-on:click="goToDetailPage(serie.id,true),$emit('no-sort')" class="img_poster" :src=" urlImg + serie.poster_path" alt="">
+            <h5 >{{serie.name}}</h5>
+            <h6>{{(new Date(serie.first_air_date).getFullYear())}}</h6>
           </div>
       </div>
-       <!-- Row if the shows are series -->
+       <!-- Row if the shows are movies -->
      <div v-if="!searchSeries" class="row">
-        <div class="col-md-3 col-6 movie-div" v-for="movie in movies" :key='movie.id' v-if="movie.poster_path">
+        <div class="col-md-3 col-6 movie-div" v-for="movie in shows" :key='movie.id' v-if="movie.poster_path">
             <img v-on:click="goToDetailPage(movie.id,false),$emit('no-sort')" class="img_poster" :src=" urlImg + movie.poster_path" alt="">
             <h5 >{{movie.title}}</h5>
             <h6>{{(new Date(movie.release_date).getFullYear())}}</h6>
@@ -29,7 +29,10 @@
    </div>
   </div>
   <!-- Div with detail page component -->
-  <DetailedPage v-if="movies.length == 1" v-bind:goToDetailPage="goToDetailPage" v-bind:movies="this.movies"/>
+  <DetailedPage v-if="shows.length == 1" v-bind:goToDetailPage="goToDetailPage"
+  v-bind:shows="this.shows"
+  v-bind:sort="this.sort"
+  />
 </div>
 </template>
 
@@ -47,9 +50,10 @@ import DetailedPage from "./DetailedPage.vue"
 })
 export default class Movies extends Vue {
     @Prop()"getShowsByNetwork" : any;
-    @Prop()"movies" : Array<object>
+    @Prop()"shows" : Array<object>
     @Prop()"searchSeries" : boolean;
     @Prop()"recommended" : boolean;
+    @Prop() "sort" : boolean;
     apiKey: string = "0567971fd9aa85a3b7dcd6d28eeabd21";
     public urlImg: String = "https://image.tmdb.org/t/p/original/";
     heightSortBox: number = 22;
@@ -60,8 +64,9 @@ export default class Movies extends Vue {
     goToDetailPage(id:number, series:boolean) {
     let resource : string = series ? "tv" : "movie";
     axios.get(`https://api.themoviedb.org/3/${resource}/${id}?api_key=${this.apiKey}`)
-    .then(response => this.movies = [response.data])
+    .then(response => this.shows = [response.data])
     .catch(err=> console.log(err))
+    
 }
 
 }
@@ -69,14 +74,12 @@ export default class Movies extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/* Style for smaller screens */
+/* Style for s */
 @media(max-width:992px){
     .img_poster{
         width:130px!important;
     }
 }
-
-/* General style */
 .loading-img{
     height: 100vh;
     display: flex;

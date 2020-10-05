@@ -66,7 +66,7 @@ import RandomMovie from "./RandomMovie.vue";
 })
 export default class Navbar extends Vue{
 @Prop()"isThereRandom" : boolean;
-@Prop()"movies" : Array<object>;
+@Prop()"shows" : Array<object>;
 heightDiv : number = 0;
 heightNetwork : number = 0;
 marginRightNetwork : number = -250;
