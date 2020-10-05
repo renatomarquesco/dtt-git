@@ -104,8 +104,7 @@ public showRandom() {
 public getShowsByNetwork(idNetwork: number) { 
     this.searchSeries = true
     axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=0567971fd9aa85a3b7dcd6d28eeabd21&language=en-US&with_networks=${idNetwork}`)
-    .then(response => this.movies = response.data.results
-)
+    .then(response => this.movies = response.data.results)
     .catch(err => console.log(err))
     this.isThereRandom = false;
 }
