@@ -26,7 +26,11 @@
       v-bind:showRandom="showRandom"
       v-bind:randomMovie="this.randomMovie"
     />
-    <Footer />
+    <Footer
+     v-bind:getShowByNetwork="getShowByNetwork"
+     v-bind:showRandom="showRandom"
+     v-on:emit-network="getShowsByNetwork"
+    />
   </div>
 </template>
 
